@@ -4,8 +4,8 @@
 
 ## Стек технологий
 
-- **PHP 7+**
-- **Laravel 8+**
+- **PHP 7.4**
+- **Laravel 8.3**
 - **MySQL**
 - **Bootstrap 4**
 - **Git**
