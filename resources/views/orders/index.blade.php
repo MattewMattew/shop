@@ -1,30 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список заказов</title>
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'Список заказов')
+
+@section('content')
 <h1>Список заказов</h1>
 @if(session('success'))
-<div>{{ session('success') }}</div>
+<div class="alert alert-success">{{ session('success') }}</div>
 @endif
-<ul>
-    @foreach($orders as $order)
-    <li>
-        Номер заказа: {{ $order->id }}<br>
-        Дата заказа: {{ $order->created_at->format('d.m.Y H:i:s') }}<br>
-        Товары: {{ implode(', ', $order->products->pluck('name')->toArray()) }}<br>
-        Общая стоимость: {{ $order->total_price }} руб.<br>
-        <form action="{{ route('orders.destroy', $order->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit">Удалить заказ</button>
-        </form>
-    </li>
-    @endforeach
-</ul>
-<p>Итоговая стоимость всех заказов: {{ $totalOrdersPrice }} руб.</p>
-</body>
-</html>
+@if(session('error'))
+<div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
+@auth
+<div>
+    <h2>Ваши заказы</h2>
+    @if(count($orders) > 0)
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Номер заказа</th>
+            <th>Дата заказа</th>
+            <th>Товары</th>
+            <th>Общая стоимость</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($orders as $order)
+        <tr>
+            <td>{{ $order->id }}</td>
+            <td>{{ $order->created_at->format('d.m.Y H:i:s') }}</td>
+            <td>{{ implode(', ', $order->products->pluck('name')->toArray()) }}</td>
+            <td>{{ $order->total_price }} руб.</td>
+            <td>
+                <form action="{{ route('orders.destroy', $order->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        @endforeach
+        </tbody>
+    </table>
+    <p>Итоговая стоимость всех заказов: {{ $totalOrdersPrice }} руб.</p>
+    @else
+    <p>У вас нет заказов.</p>
+    @endif
+</div>
+@else
+<p>Для просмотра заказов необходимо <a href="{{ route('login') }}">войти</a> или <a href="{{ route('register') }}">зарегистрироваться</a>.</p>
+@endauth
+@endsection

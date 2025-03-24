@@ -17,11 +17,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
 Route::post('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('add.to.cart');
+Route::delete('/remove-from-cart/{productId}', [ProductController::class, 'removeFromCart'])->name('remove.from.cart');
+Route::get('/cart', [ProductController::class, 'showCart'])->name('cart.show');
+Route::delete('/clear-cart', [ProductController::class, 'clearCart'])->name('clear.cart');
 
-Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-Route::delete('/orders/{orderId}', [OrderController::class, 'destroy'])->name('orders.destroy');
-
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::delete('/orders/{orderId}', [OrderController::class, 'destroy'])->name('orders.destroy');
 });
+
+require __DIR__.'/auth.php';

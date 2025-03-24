@@ -1,26 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог товаров</title>
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'Каталог товаров')
+
+@section('content')
 <h1>Каталог товаров</h1>
-@if(session('success'))
-<div>{{ session('success') }}</div>
-@endif
-@foreach($products as $product)
-<div>
-    <h2>{{ $product->name }}</h2>
-    <p>Цена: {{ $product->price }} руб.</p>
-    <form action="{{ route('add.to.cart', $product->id) }}" method="POST">
-        @csrf
-        <label for="quantity">Количество:</label>
-        <input type="number" id="quantity" name="quantity" min="1" value="1">
-        <button type="submit">Добавить в корзину</button>
-    </form>
+<a href="{{ route('cart.show') }}" class="btn btn-primary mb-4">Перейти к корзине</a>
+<div class="row">
+    @foreach($products as $product)
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ $product->name }}</h5>
+                <p class="card-text">Цена: {{ $product->price }} руб.</p>
+                <form action="{{ route('add.to.cart', $product->id) }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="quantity">Количество:</label>
+                        <input type="number" id="quantity" name="quantity" min="1" value="1" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </div>
-@endforeach
-</body>
-</html>
+@endsection

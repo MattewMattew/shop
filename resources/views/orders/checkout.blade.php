@@ -1,32 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оформление заказа</title>
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'Оформление заказа')
+
+@section('content')
 <h1>Оформление заказа</h1>
-@if(session('error'))
-<div>{{ session('error') }}</div>
-@endif
-<ul>
+@auth
+@if(!empty(session('cart')))
+<ul class="list-group mb-3">
     @php
     $totalPrice = 0;
     @endphp
     @foreach(session('cart', []) as $productId => $item)
-    <li>
-        {{ $item['name'] }} - {{ $item['quantity'] }} шт. x {{ $item['price'] }} руб. = {{ $item['quantity'] * $item['price'] }} руб.
+    <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+            <h6 class="my-0">{{ $item['name'] }}</h6>
+            <small class="text-muted">{{ $item['quantity'] }} шт. x {{ $item['price'] }} руб.</small>
+        </div>
+        <span class="text-muted">{{ $item['quantity'] * $item['price'] }} руб.</span>
         @php
         $totalPrice += $item['quantity'] * $item['price'];
         @endphp
     </li>
     @endforeach
+    <li class="list-group-item d-flex justify-content-between">
+        <span>Общая стоимость</span>
+        <strong>{{ $totalPrice }} руб.</strong>
+    </li>
 </ul>
-<p>Общая стоимость: {{ $totalPrice }} руб.</p>
 <form action="{{ route('checkout') }}" method="POST">
     @csrf
-    <button type="submit">Оформить заказ</button>
+    <button type="submit" class="btn btn-success btn-block">Оформить заказ</button>
 </form>
-</body>
-</html>
+@else
+<p>Корзина пуста. Вернитесь в <a href="{{ route('products.index') }}">каталог товаров</a>.</p>
+@endif
+@else
+<p>Для оформления заказа необходимо <a href="{{ route('login') }}">войти</a> или <a href="{{ route('register') }}">зарегистрироваться</a>.</p>
+@endauth
+@endsection
