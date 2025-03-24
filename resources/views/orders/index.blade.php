@@ -4,16 +4,9 @@
 
 @section('content')
 <h1>Список заказов</h1>
-@if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-<div class="alert alert-danger">{{ session('error') }}</div>
-@endif
 
 @auth
 <div>
-    <h2>Ваши заказы</h2>
     @if(count($orders) > 0)
     <table class="table table-striped">
         <thead>

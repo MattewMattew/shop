@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -51,13 +52,18 @@ class ProductController extends Controller
         return back()->with('error', 'Товар не найден в корзине.');
     }
 
+    /**
+     * Переход в корзиу
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function showCart()
     {
         $cart = session()->get('cart', []);
         return view('cart.index', compact('cart'));
     }
 
-    public function clearCart()
+    public function clearCart(): RedirectResponse
     {
         session()->forget('cart');
         return back()->with('success', 'Корзина очищена.');

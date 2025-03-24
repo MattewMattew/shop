@@ -4,12 +4,6 @@
 
 @section('content')
 <h1>Корзина</h1>
-@if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-<div class="alert alert-danger">{{ session('error') }}</div>
-@endif
 
 @if(empty(session('cart')))
 <p>Корзина пуста. Вернитесь в <a href="{{ route('products.index') }}">каталог товаров</a>.</p>
@@ -55,6 +49,7 @@
             <a href="{{ route('checkout') }}" class="btn btn-success btn-sm">Оформить заказ</a>
             <form action="{{ route('clear.cart') }}" method="POST" style="display:inline;">
                 @csrf
+                @method('DELETE')
                 <button type="submit" class="btn btn-secondary btn-sm">Очистить корзину</button>
             </form>
         </td>
